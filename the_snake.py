@@ -90,7 +90,7 @@ class Snake(GameObject):
     def __init__(self, body_color=SNAKE_COLOR):
         """Инициализирует объект змейка."""
         super().__init__(body_color)
-        self.reset(direction=RIGHT)
+        self.reset(RIGHT)
 
     def get_head_position(self):
         """Возвращает позицию головы змейки."""
@@ -127,13 +127,16 @@ class Snake(GameObject):
             last_rect = pg.Rect(self.last, (GRID_SIZE, GRID_SIZE))
             pg.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
 
-    def reset(self, direction=choice([UP, DOWN, LEFT, RIGHT])):
+    def reset(self, direction=None):
         """Сбрасывает положение змейки в начальное состояние."""
         self.length = 1
         self.positions = [self.position]
-        self.direction = direction
         self.next_direction = None
         self.last = None
+        if direction is None:
+            self.direction = choice([UP, DOWN, LEFT, RIGHT])
+        else:
+            self.direction = direction
         screen.fill(BOARD_BACKGROUND_COLOR)
 
 
