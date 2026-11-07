@@ -61,20 +61,16 @@ class Apple(GameObject):
     def __init__(self, body_color=APPLE_COLOR, occupied_position=None):
         """Инициализирует объект яблочко."""
         super().__init__(body_color)
-        self.randomize_position(occupied_position)
+        self.randomize_position(occupied_position or [])
 
-    def randomize_position(self, occupied_position=None):
+    def randomize_position(self, occupied_position):
         """Устанавливает случайную позицию для яблока в пределах поля."""
         while True:
-            position_x = (randint(0, (SCREEN_WIDTH // GRID_SIZE) - 1)
-                          * GRID_SIZE)
-            position_y = (randint(0, (SCREEN_HEIGHT // GRID_SIZE) - 1)
-                          * GRID_SIZE)
-            if (
-                occupied_position is None
-                or (position_x, position_y) not in occupied_position
-            ):
-                self.position = (position_x, position_y)
+            self.position = (
+                (randint(0, (SCREEN_WIDTH // GRID_SIZE) - 1) * GRID_SIZE),
+                (randint(0, (SCREEN_HEIGHT // GRID_SIZE) - 1) * GRID_SIZE)
+            )
+            if self.position not in occupied_position:
                 break
 
     def draw(self):
@@ -162,7 +158,7 @@ def main():
     pg.init()
     # Тут нужно создать экземпляры классов.
     snake = Snake()
-    apple = Apple()
+    apple = Apple(occupied_position=snake.positions)
 
     while True:
         clock.tick(SPEED)
@@ -171,8 +167,8 @@ def main():
         snake.move()
         if snake.get_head_position() == apple.position:
             snake.length += 1
-            apple.randomize_position(snake.positions)
-        if snake.get_head_position() in snake.positions[1:]:
+            apple.randomize_position(snake.positions or [])
+        elif snake.get_head_position() in snake.positions[1:]:
             snake.reset()
         apple.draw()
         snake.draw()
